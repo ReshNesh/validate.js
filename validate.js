@@ -15,14 +15,12 @@
     var defaults = {
         messages: {
             required: 'The %s field is required.',
-            proper_required: 'The %s field is required.',
             matches: 'The %s field does not match the %s field.',
             default: 'The %s field is still set to default, please change.',
             valid_email: 'The %s field must contain a valid email address.',
             valid_emails: 'The %s field must contain all valid email addresses.',
             min_length: 'The %s field must be at least %s characters in length.',
             max_length: 'The %s field must not exceed %s characters in length.',
-            max_length_trim: 'The %s field must not exceed %s characters in length.',
             exact_length: 'The %s field must be exactly %s characters in length.',
             greater_than: 'The %s field must contain a number greater than %s.',
             less_than: 'The %s field must contain a number less than %s.',
@@ -221,7 +219,7 @@
          * If the value is null and not required, we don't need to run through validation, unless the rule is a callback, but then only if the value is not null
          */
 
-        if ( (field.rules.indexOf('required') === -1 && field.rules.indexOf('proper_required') === -1 && (!field.value || field.value === '' || field.value === undefined)) && (field.rules.indexOf('callback_') === -1 || field.value === null) ) {
+        if ( (field.rules.indexOf('required') === -1 && (!field.value || field.value === '' || field.value === undefined)) && (field.rules.indexOf('callback_') === -1 || field.value === null) ) {
             return;
         }
 
@@ -307,16 +305,6 @@
             return (value !== null && value !== '');
         },
 
-        proper_required: function(field) {
-            var value = field.value;
-
-            if ((field.type === 'checkbox') || (field.type === 'radio')) {
-                return (field.checked === true);
-            }
-
-            return (value !== null && value.trim() !== '');
-        },
-        
         default: function(value, field, defaultName){
             return value !== defaultName;
         },
@@ -361,14 +349,6 @@
             }
 
             return (value.length <= parseInt(length, 10));
-        },
-
-        max_length_trim: function(value, field, length) {
-            if (!numericRegex.test(length)) {
-                return false;
-            }
-
-            return (value.trim().length <= parseInt(length, 10));
         },
 
         exact_length: function(value, field, length) {
