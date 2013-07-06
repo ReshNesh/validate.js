@@ -249,7 +249,7 @@
              */
 
             if (typeof this._hooks[method] === 'function') {
-                if (!this._hooks[method].apply(this, [field, param])) {
+                if (!this._hooks[method].apply(this, [field.value, field, param])) {
                     failed = true;
                 }
             } else if (method.substring(0, 9) === 'callback_') {
@@ -257,7 +257,7 @@
                 method = method.substring(9, method.length);
 
                 if (typeof this.handlers[method] === 'function') {
-                    if (this.handlers[method].apply(this, [field.value, param]) === false) {
+                    if (this.handlers[method].apply(this, [field.value, field, param]) === false) {
                         failed = true;
                     }
                 }
@@ -299,9 +299,7 @@
      */
 
     FormValidator.prototype._hooks = {
-        required: function(field) {
-            var value = field.value;
-
+        required: function(value, field) {
             if ((field.type === 'checkbox') || (field.type === 'radio')) {
                 return (field.checked === true);
             }
@@ -319,26 +317,26 @@
             return (value !== null && value.trim() !== '');
         },
         
-        default: function(field, defaultName){
-            return field.value !== defaultName;
+        default: function(value, field, defaultName){
+            return value !== defaultName;
         },
 
-        matches: function(field, matchName) {
+        matches: function(value, field, matchName) {
             var el = this.form[matchName];
 
             if (el) {
-                return field.value === el.value;
+                return value === el.value;
             }
 
             return false;
         },
 
-        valid_email: function(field) {
-            return emailRegex.test(field.value);
+        valid_email: function(value, field) {
+            return emailRegex.test(value);
         },
 
-        valid_emails: function(field) {
-            var result = field.value.split(",");
+        valid_emails: function(value, field) {
+            var result = value.split(",");
 
             for (var i = 0; i < result.length; i++) {
                 if (!emailRegex.test(result[i])) {
@@ -349,106 +347,106 @@
             return true;
         },
 
-        min_length: function(field, length) {
+        min_length: function(value, field, length) {
             if (!numericRegex.test(length)) {
                 return false;
             }
 
-            return (field.value.length >= parseInt(length, 10));
+            return (value.length >= parseInt(length, 10));
         },
 
-        max_length: function(field, length) {
+        max_length: function(value, field, length) {
             if (!numericRegex.test(length)) {
                 return false;
             }
 
-            return (field.value.length <= parseInt(length, 10));
+            return (value.length <= parseInt(length, 10));
         },
 
-        max_length_trim: function(field, length) {
+        max_length_trim: function(value, field, length) {
             if (!numericRegex.test(length)) {
                 return false;
             }
 
-            return (field.value.trim().length <= parseInt(length, 10));
+            return (value.trim().length <= parseInt(length, 10));
         },
 
-        exact_length: function(field, length) {
+        exact_length: function(value, field, length) {
             if (!numericRegex.test(length)) {
                 return false;
             }
 
-            return (field.value.length === parseInt(length, 10));
+            return (value.length === parseInt(length, 10));
         },
 
-        greater_than: function(field, param) {
-            if (!decimalRegex.test(field.value)) {
+        greater_than: function(value, field, param) {
+            if (!decimalRegex.test(value)) {
                 return false;
             }
 
-            return (parseFloat(field.value) > parseFloat(param));
+            return (parseFloat(value) > parseFloat(param));
         },
 
-        less_than: function(field, param) {
-            if (!decimalRegex.test(field.value)) {
+        less_than: function(value, field, param) {
+            if (!decimalRegex.test(value)) {
                 return false;
             }
 
-            return (parseFloat(field.value) < parseFloat(param));
+            return (parseFloat(value) < parseFloat(param));
         },
 
-        alpha: function(field) {
-            return (alphaRegex.test(field.value));
+        alpha: function(value, field) {
+            return (alphaRegex.test(value));
         },
 
-        alpha_numeric: function(field) {
-            return (alphaNumericRegex.test(field.value));
+        alpha_numeric: function(value, field) {
+            return (alphaNumericRegex.test(value));
         },
 
-        alpha_dash: function(field) {
-            return (alphaDashRegex.test(field.value));
+        alpha_dash: function(value, field) {
+            return (alphaDashRegex.test(value));
         },
 
-        numeric: function(field) {
-            return (numericRegex.test(field.value));
+        numeric: function(value, field) {
+            return (numericRegex.test(value));
         },
 
-        integer: function(field) {
-            return (integerRegex.test(field.value));
+        integer: function(value, field) {
+            return (integerRegex.test(value));
         },
 
-        decimal: function(field) {
-            return (decimalRegex.test(field.value));
+        decimal: function(value, field) {
+            return (decimalRegex.test(value));
         },
 
-        is_natural: function(field) {
-            return (naturalRegex.test(field.value));
+        is_natural: function(value, field) {
+            return (naturalRegex.test(value));
         },
 
-        is_natural_no_zero: function(field) {
-            return (naturalNoZeroRegex.test(field.value));
+        is_natural_no_zero: function(value, field) {
+            return (naturalNoZeroRegex.test(value));
         },
 
-        valid_ip: function(field) {
-            return (ipRegex.test(field.value));
+        valid_ip: function(value, field) {
+            return (ipRegex.test(value));
         },
 
-        valid_base64: function(field) {
-            return (base64Regex.test(field.value));
+        valid_base64: function(value, field) {
+            return (base64Regex.test(value));
         },
 
-        valid_url: function(field) {
-            return (urlRegex.test(field.value));
+        valid_url: function(value, field) {
+            return (urlRegex.test(value));
         },
 
-        valid_credit_card: function(field){
+        valid_credit_card: function(value, field){
             // Luhn Check Code from https://gist.github.com/4075533
             // accept only digits, dashes or spaces
-            if (!numericDashRegex.test(field.value)) return false;
+            if (!numericDashRegex.test(value)) return false;
 
             // The Luhn Algorithm. It's so pretty.
             var nCheck = 0, nDigit = 0, bEven = false;
-            var strippedField = field.value.replace(/\D/g, "");
+            var strippedField = value.replace(/\D/g, "");
 
             for (var n = strippedField.length - 1; n >= 0; n--) {
                 var cDigit = strippedField.charAt(n);
@@ -464,12 +462,12 @@
             return (nCheck % 10) === 0;
         },
 
-        is_file_type: function(field,type) {
+        is_file_type: function(value, field, type) {
             if (field.type !== 'file') {
                 return true;
             }
 
-            var ext = field.value.substr((field.value.lastIndexOf('.') + 1)),
+            var ext = value.substr((value.lastIndexOf('.') + 1)),
                 typeArray = type.split(','),
                 inArray = false,
                 i = 0,
