@@ -22,6 +22,7 @@
             valid_emails: 'The %s field must contain all valid email addresses.',
             min_length: 'The %s field must be at least %s characters in length.',
             max_length: 'The %s field must not exceed %s characters in length.',
+            max_length_trim: 'The %s field must not exceed %s characters in length.',
             exact_length: 'The %s field must be exactly %s characters in length.',
             greater_than: 'The %s field must contain a number greater than %s.',
             less_than: 'The %s field must contain a number less than %s.',
@@ -362,6 +363,14 @@
             }
 
             return (field.value.length <= parseInt(length, 10));
+        },
+
+        max_length_trim: function(field, length) {
+            if (!numericRegex.test(length)) {
+                return false;
+            }
+
+            return (field.value.trim().length <= parseInt(length, 10));
         },
 
         exact_length: function(field, length) {
