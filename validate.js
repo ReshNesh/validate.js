@@ -104,20 +104,6 @@
                 this._addField(field, field.name);
             }
         }
-
-        /*
-         * Attach an event callback for the form submission
-         */
-
-        var _onsubmit = this.form.onsubmit;
-
-        this.form.onsubmit = (function(that) {
-            return function(evt) {
-                try {
-                    return that._validateForm(evt) && (_onsubmit === undefined || _onsubmit());
-                } catch(e) {}
-            };
-        })(this);
     },
 
     attributeValue = function (element, attributeName) {
@@ -193,7 +179,7 @@
      * Runs the validation when the form is submitted.
      */
 
-    FormValidator.prototype._validateForm = function(evt) {
+    FormValidator.prototype.validateForm = function() {
         this.errors = [];
 
         for (var key in this.fields) {
@@ -217,19 +203,8 @@
         }
 
         if (typeof this.callback === 'function') {
-            this.callback(this.errors, evt);
+            this.callback(this.errors);
         }
-
-        if (this.errors.length > 0) {
-            if (evt && evt.preventDefault) {
-                evt.preventDefault();
-            } else if (event) {
-                // IE uses the global event variable
-                event.returnValue = false;
-            }
-        }
-
-        return true;
     };
 
     /*
