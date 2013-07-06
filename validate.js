@@ -227,11 +227,19 @@
          * Run through the rules and execute the validation methods as needed
          */
 
+        var value = field.value;
+
         for (var i = 0, ruleLength = rules.length; i < ruleLength; i++) {
             var method = rules[i],
                 param = null,
                 failed = false,
                 parts = ruleRegex.exec(method);
+
+            // Trim the value
+            if (method === 'trim') {
+                value = value.trim();
+                continue;
+            }
 
             /*
              * If the rule has a parameter (i.e. matches[param]) split it out
@@ -247,7 +255,7 @@
              */
 
             if (typeof this._hooks[method] === 'function') {
-                if (!this._hooks[method].apply(this, [field.value, field, param])) {
+                if (!this._hooks[method].apply(this, [value, field, param])) {
                     failed = true;
                 }
             } else if (method.substring(0, 9) === 'callback_') {
@@ -255,7 +263,7 @@
                 method = method.substring(9, method.length);
 
                 if (typeof this.handlers[method] === 'function') {
-                    if (this.handlers[method].apply(this, [field.value, field, param]) === false) {
+                    if (this.handlers[method].apply(this, [value, field, param]) === false) {
                         failed = true;
                     }
                 }
