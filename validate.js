@@ -181,6 +181,7 @@
 
     FormValidator.prototype.validateForm = function() {
         this.errors = [];
+        var values = {};
 
         for (var key in this.fields) {
             if (this.fields.hasOwnProperty(key)) {
@@ -197,13 +198,13 @@
                      * Run through the rules for each field.
                      */
 
-                    this._validateField(field);
+                    values[field.id] = this._validateField(field);
                 }
             }
         }
 
         if (typeof this.callback === 'function') {
-            this.callback(this.errors);
+            this.callback(this.errors, values);
         }
     };
 
@@ -294,9 +295,11 @@
                 });
 
                 // Break out so as to not spam with validation errors (i.e. required and valid_email)
-                break;
+                return null;
             }
         }
+
+        return value;
     };
 
     /*
