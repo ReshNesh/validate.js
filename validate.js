@@ -198,7 +198,7 @@
                      * Run through the rules for each field.
                      */
 
-                    values[field.id] = this._validateField(field);
+                    values[key] = this._validateField(field);
                 }
             }
         }
