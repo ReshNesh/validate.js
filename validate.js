@@ -248,6 +248,18 @@
                 continue;
             }
 
+            // Make the value uppercase
+            if (method === 'upper') {
+                value = value.toUpperCase();
+                continue;
+            }
+
+            // Make the value lowercase
+            if (method === 'lower') {
+                value = value.toLowerCase();
+                continue;
+            }
+
             /*
              * If the rule has a parameter (i.e. matches[param]) split it out
              */
